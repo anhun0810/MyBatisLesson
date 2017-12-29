@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <!-- 
+  	接口绑定 将接口中的方法和对应的sql声明进行绑定
+  	接口绑定的参数 可以通过索引的方式获取 索引从0开始 
+  	比如('sex','adc') 0='sex' 1='abc'
+  		param1='sex'  param2='abc'
+   -->
+<mapper namespace="proc">
+<!--  每种返回的数据类型  都可以设置简单的别名   默认的别名是TypeAliasRegistry -->
+  <select id="call_prg_add" resultType="java.util.Map" statementType="CALLABLE">
+  {call prg_add (
+  #{p1,mode=IN,jdbcType=NUMERIC},
+  #{p2,mode=IN,jdbcType=NUMERIC},
+  #{result,mode=OUT,jdbcType=NUMERIC})}
+  </select>
+  
+   <select id="call_fun_add" resultType="java.util.Map" statementType="CALLABLE">
+  {#{result,mode=OUT,jdbcType=NUMERIC}=call fun_add (
+  #{p1,mode=IN,jdbcType=NUMERIC},
+  #{p2,mode=IN,jdbcType=NUMERIC})
+  }
+  </select>
+  
+</mapper>

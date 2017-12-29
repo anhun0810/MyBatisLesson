@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.easytop.lesson04.xml.StudentMapper">
+
+	<!-- if 判断条件是否满足  满足 就if中的sql 自动拼接到主sql -->
+	<!-- where 自动判断第一个条件是否存在where 如果没有where 追加同时去掉第一个and -->
+	<!-- trim 永远 灵活性更高
+				prefix配置的参数会被添加在sql语句开始的地方
+				prefixOverrides sql语句首次出现的参数会被覆盖
+	<trim prefix="where" prefixOverrides="and"></trim>等同于<where></where>也等同于直接给where判断条件
+	 -->
+  <select id="queryStudent" resultType="student">
+    select * from student
+    <trim prefix="where" prefixOverrides="and">
+	    <if test="sname!=null">
+	    	and sname like '%${sname}%'
+	    </if>
+	    <if	test="address!=null">
+	    	and address like '%${address}%'
+	    </if>
+    </trim>
+  </select>
+  
+  <select id="queryBySex" resultType="student">
+    select * from student where 1=1
+    <choose>
+    	<when test="sex!=null">
+    		and sex=#{sex}
+    	</when>
+    	<otherwise>
+    		and sex=1
+    	</otherwise>
+    </choose>
+  </select>
+  
+  <!-- 1.set标签  动态去掉最后一个条件的逗号	
+	2.<trim prefix="sex" prefixOverrides="" suffixOverrides="," suffix=""></trim>
+	第一个等同 第二点
+  -->
+  
+  <update id="updateStudent">
+  	update student
+  	<set>
+	  	<if test="sname!=null">
+	  		sname=#{sname}
+	  	</if>
+	  	<if test="age!=null">
+	  		age=#{age}
+	  	</if>
+	  	<if test="sex!=null">
+	  		sex=#{age}
+	  	</if>
+	</set>
+  	where sid=#{sid}
+  </update>
+  <!--	<foreach item="gid" collection="gradeList" open="where gid in(" close=")" separator=",">
+  			open表示循环开始之前追加的sql
+  			close表示循环结束之后追加的sql
+  			collection指定传入的值的集合
+  			separator非最后一次的循环 值上 添加分隔符(逗号)
+  			item表示每一次循环的值被储存的变量名
+   -->
+  <select id="queryAnyStudent" resultType="student">
+  	select * from student
+  	<foreach item="gid" collection="gradeList" open="where gid in(" close=")" separator=",">
+  		${gid}
+  	</foreach>
+  </select>
+  
+  
+  
+  
+</mapper>
